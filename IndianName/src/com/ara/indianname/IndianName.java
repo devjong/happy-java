@@ -12,13 +12,13 @@ public class IndianName {
 		String name = kb.nextLine();
 		
 		System.out.println("생년을 입력하세요");
-		String birthYear = kb.next();
+		String birthYear = kb.nextLine();
 		
 		System.out.println("생월을 입력하세요");
-		String birthMonth = kb.next();
+		int birthMonth = kb.nextInt();
 		
 		System.out.println("생일을 입력하세요");
-		String birthDay = kb.next();
+		int birthDay = kb.nextInt();
 		
 		String yearStr = null;
 		String monthStr =null;
@@ -50,96 +50,96 @@ public class IndianName {
 	
 		
 		
-		if(birthMonth == "1") {
+		if(birthMonth == 1) {
 			monthStr = "늑대";
-		} else if(birthMonth == "2") {
+		} else if(birthMonth == 2) {
 			monthStr = "태양";
-		} else if(birthMonth == "3") {
+		} else if(birthMonth == 3) {
 			monthStr = "양";
-		} else if(birthMonth == "4") {
+		} else if(birthMonth ==4) {
 			monthStr = "매";
-		}else if(birthMonth == "5") {
+		}else if(birthMonth == 5) {
 			monthStr = "황소";
-		} else if(birthMonth == "6") {
+		} else if(birthMonth == 6) {
 			monthStr = "불꽃";
-		}else if(birthMonth == "7") {
+		}else if(birthMonth == 7) {
 			monthStr = "나무";
-		} else if(birthMonth == "8") {
+		} else if(birthMonth == 8) {
 			monthStr = "달빛";
-		}else if(birthMonth == "9") {
+		}else if(birthMonth == 9) {
 			monthStr = "말";
-		} else if(birthMonth == "10") {
+		} else if(birthMonth == 10) {
 			monthStr = "돼지";
-		}else if(birthMonth == "11") {
+		}else if(birthMonth == 11) {
 			monthStr = "하늘";
-		} else if(birthMonth == "12") {
+		} else if(birthMonth == 12) {
 			monthStr = "바람";
 		}
 		
 		System.out.println(monthStr);
 		
 		
-		if(birthDay == "1") {
+		if(birthDay == 1) {
 			dayStr = "~와(과) 함께 춤을";
-		} else if(birthDay == "2") {
+		} else if(birthDay == 2) {
 			dayStr = "~의 기상";
-		} else if(birthDay == "3") {
+		} else if(birthDay == 3) {
 			dayStr = "~은(는) 그림자 속에";
-		} else if(birthDay == "4") {
+		} else if(birthDay == 4) {
 			dayStr = null;
-		} else if(birthDay == "5") {
+		} else if(birthDay == 5) {
 			dayStr = null;
-		} else if(birthDay == "6") {
+		} else if(birthDay == 6) {
 			dayStr = null;
-		} else if(birthDay == "7") {
+		} else if(birthDay == 7) {
 			dayStr = "~의 환생";
-		} else if(birthDay == "8") {
+		} else if(birthDay == 8) {
 			dayStr = "~의 죽음";
-		} else if(birthDay == "9") {
+		} else if(birthDay == 9) {
 			dayStr = "~아래에서";
-		} else if(birthDay == "10") {
+		} else if(birthDay == 10) {
 			dayStr = "~을(를) 보라";
-		} else if(birthDay == "11") {
+		} else if(birthDay == 11) {
 			dayStr = "~이(가) 노래하다";
-		} else if(birthDay == "12") {
+		} else if(birthDay == 12) {
 			dayStr = "~의 그늘, 그림자";
-		}else if(birthDay == "13") {
+		}else if(birthDay == 13) {
 			dayStr = "~의 일격";
-		} else if(birthDay == "14") {
+		} else if(birthDay == 14) {
 			dayStr = "~에게 쫓기는 남자";
-		} else if(birthDay == "15") {
+		} else if(birthDay == 15) {
 			dayStr = "~의 행진";
-		}else if(birthDay == "16") {
+		}else if(birthDay == 16) {
 			dayStr = "~의 왕";
-		} else if(birthDay == "17") {
+		} else if(birthDay == 17) {
 			dayStr = "~의 유령";
-		} else if(birthDay == "18") {
+		} else if(birthDay == 18) {
 			dayStr = "~을 죽인 자";
-		}else if(birthDay == "19") {
+		}else if(birthDay == 19) {
 			dayStr = "~은(는) 맨날 잠잔다";
-		} else if(birthDay == "20") {
+		} else if(birthDay == 20) {
 			dayStr = "~처럼..";
-		} else if(birthDay == "21") {
+		} else if(birthDay == 21) {
 			dayStr = "~의 고향";
-		}else if(birthDay == "22") {
+		}else if(birthDay == 22) {
 			dayStr = "~의 전사";
-		} else if(birthDay == "23") {
+		} else if(birthDay == 23) {
 			dayStr = "은(는) 나의 친구";
-		} else if(birthDay == "24") {
+		} else if(birthDay == 24) {
 			dayStr = "~의 노래";
-		}else if(birthDay == "25") {
+		}else if(birthDay == 25) {
 			dayStr = "~의 정령";
-		} else if(birthDay == "26") {
+		} else if(birthDay == 26) {
 			dayStr = "~의 파수꾼";
-		} else if(birthDay == "27") {
+		} else if(birthDay == 27) {
 			dayStr = "~의 악마.";
-		}else if(birthDay == "28") {
+		}else if(birthDay == 28) {
 			dayStr = "~와(과) 같은 사나이";
-		} else if(birthDay == "29") {
+		} else if(birthDay == 29) {
 			dayStr = "~의 심판자, ~을(를) 쓰러트린 자";
-		} else if(birthDay == "30") {
+		} else if(birthDay == 30) {
 			dayStr = "~의 혼";
-		}else if(birthDay == "31") {
+		}else if(birthDay == 31) {
 			dayStr = "~은(는) 말이 없다";
 		}				
 			
