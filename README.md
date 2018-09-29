@@ -1,3 +1,5 @@
+
+
 ## 즐거운 자바 04 -  new 연산자와 인스턴스, static 키워드와 Hello 실행순서
 
 - int 초기값은 0
@@ -1082,3 +1084,554 @@ Set인터페이스를 사용하는 예제를 만들기
 Map 인터페이스를 사용하는 예제
 
 Map에 값을 저장하고 모든 Key와 value를 꺼내는 예제.
+
+
+
+## 즐거운 자바 09 - Exception 처리!
+
+오늘 배울 내용은 Exception 처리에 대한 내요.
+오류처리!
+
+인스턴스가 만들어지면 메모리에 올라간다.
+
+인스턴스는 어떤 메모리에 올라가느냐? 인스턴스는 heap이라고 불리는 메모리에 올라가게 됩니다
+
+CalBean 이라는 클래스를 만들었는데.
+main메소드가 가장 먼저 실행되었다. main메소드를 프로그램 시작점.
+자바에는 Java Stack라고 불리는 메모리 영역이 있다.
+
+메소드가 실행이 되면 현재 실행되는 메소드정보가 Stack Entry라고 불리는 공간에 저장이되고 그 Stack Entry는 Java Stack에 한 건 저장된다.
+
+
+
+JavaStack, stackEntry, 지역변수, Stack Trace가 왜 저렇게 출력되는가?
+
+
+
+Exception은 크게 2가지 종류가 있다
+
+- RuntimeException - RuntionException을 상속받는 Exception -
+- Checked Exception - RuntimeException을 상속받지 않고,
+  Exception을 상속받은 클래스. -- 컴파일시에 익셉션 처리해주지 않으면 오류가 발생함 그래서 하기 싫어도 익셉션 처리해줘야 함
+
+```java
+public static void main(String[] args){
+    int i = 6;
+    int k = 0;
+    try{
+        int value = Cal.divide(i, k);
+        System.out.println(value);
+    } catch (IllegalArgumentException e){
+        System.out.println("0으로 나눌 수 없다.")
+    }
+}
+
+class Cal{
+    /**
+    * 파라미터 m을 n으로 나눈 결과를 리턴한다.
+    * @param m
+    * @param n
+    * @return m을 n으로 나눈 결과
+    * @throws IllegalArgumentException n이 0일 경우 발생한다.    
+    */
+    
+    // didvide메소드는 IllegalArgumentException 이런 익셉션을 발생할 수 있따.
+    public static int divide (int m , int n)
+    			throws IllegalArgumentException { // 이메소드는 익셉션을 발생할 수 있따.
+        if(n ==0){
+            throw new IllegalArgumentException("0으로 나눌 수 없어요.")
+        }
+        int value = 0;
+        value = m / n;
+        return value;
+    
+	}
+}
+
+
+
+```
+
+- 파라미터가 올바르기 않을 경우
+  강제로 Exception을 발생. throw를 사용, 이 메소드가 어떤 Exception을 발생할 수 있다라는 경고는? 
+  메소드 뒤에 throws 라고 적어주고 그 뒤에 Exception을 적어준다. 
+- 먼저 파라미터가 올바른지 검사하는 습관
+
+
+
+```java
+public static void main(String[] args){
+    int i = 6;
+    int k = 0;
+    try{
+        int value = Cal.divide(i, k);
+        System.out.println(value);
+    } catch (ArithmeticException e){
+        System.out.println("0으로 나눌 수 없다.")
+    }
+}
+
+class Cal{
+  
+    
+    // didvide메소드는 ArithmeticException 이런 익셉션을 발생할 수 있따.
+    public static int divide (int m , int n)
+    			throws ArithmeticException { // 이메소드는 익셉션을 발생할 수 있따.
+       
+        int value = 0;
+        value = m / n;
+        return value;
+    
+	}
+}
+```
+
+
+
+```java
+// 사용자 정의 Exception. 이름이 중요!!!
+// 클래스 이름만 봐도 딱 뭐인지 알아야 한다.
+// 파라미터가 뭔가 잘못되었나보다.
+class ParameterException extends RuntimeException {
+    public ParameterException(String msg){
+        super(msg);
+    }
+    public ParameterException(Exception ex){
+        super(ex);
+    }
+}
+```
+
+
+
+
+
+
+
+CalBean 예제가 실행된 후 
+Exception이 발생하고 프로그램이 죽고
+오류메시지가 출력되는 내용을 설명
+
+
+
+잘못된 값을 반환하는 것은 오류가 나서 죽는 것보다 나쁘다!
+잘못 실행되었을 경우에는 올바르지 않은 값을 리턴하는 것이 아니라, Exception이 발생하도록한다.
+
+그 발생하는 Exception은 이름이 중요하다.
+
+메소드 뒤에 throws라고 적은 후 되도록 해당 메소드가 발생하는 Exception들을 적어준다.
+
+해당 메소드를 사용할 때는 throws 뒤에 있는 exception이 발생할 수 있구나라고 예상하고 적절히 try, catch, finally를 사용하여 Exception처리를 한다.
+
+(이 메소드를 사용하는 사람들은 아 얘는 이런 메소드가 발생할 수 있겠구나 하고 Exception에 대한 처리를 해줄 수 있습니다.)
+
+
+
+throws는 메소드에서만 사용합니다. throws는 익셉션을 발생하는 것이다.
+
+
+
+## 즐거우 자바 10편 - 생성자, this, super
+
+접근지정자, 생성자, this와 super
+
+
+
+자동차 c = new 자동차();
+생성자 - 인스터느를 생성할 때 생성자를 사용.
+​		new 생성자();
+
+java.util.Random 클래스
+
+```java
+java.util  
+Class Random <--
+
+java.lang.Object      // 부보클래스는 Object를 상속받고 있다.
+	java.util.Random  // 아무것도 상속받지 않으면 Object를 상속받는다
+	
+All lmplemented interfaces: // 랜덤이라는 클래스는 Serializable 인터페이스를 구현하고 있음
+	Serializable
+	
+Dircet Known Subclasses:
+	SecureRandom, ThreadLocalRandom
+	
+Constructor Summary  // 중요
+Random()
+Creates a new random number generator
+Random(long seed)
+Creates a new random number generator using a single long seed
+
+
+
+```
+
+Ranmdom클래스는 생성자가 2개 있다.
+Random(), Random(log)  - 생성자 오버로딩 // 생성자가 2개 이상있을 경우
+
+java.lang.Math 클래스는 
+생성자에 대한 설명이 없다.
+
+Random r1 = new Random(); // Random은 인스턴스를 만들 수 있다.
+Math m1 = new Math(); // 오류!  사실은 생성자가 있지만, 사용못하도록 되어있다. 그래서 api에서도 설명이 안된다. - 접근지정자와 관련된 내용.
+
+Math는 모든 메소드가 static 한 메소드다.
+Math.메소드명(); // Math는 인스턴스를 생성하지 않고 메소드를 사용하도록 만들어진 클래스다.
+
+인스턴스를 만들려면 꼭 필요한 것이 무어이냐면 생성자가 꼭 필요하다.
+생성자가 하는 일은 은스턴스가만들어질 때 해당 인스턴스를 초기화하는 기능을 가지고 있다.
+
+// Member 라는 class가 있다.
+// Member는 반드시 이름을 가지도록 하고 싶다.
+// 이름은 인스턴스가 만들어질때 정해주고 싶다.
+
+Member m1 = new Member("홍길동");
+Member m2 = new Member("둘리")
+
+// 처음엔 이름이 없는데, 나중에 이름을 정해주고 싶다.
+
+Member m1 = new Member(); / 인스턴스가 만들어질 때 이름을 설정하지 않았다.
+m1.setName("홍길동");
+
+// 주소위라는 인스턴스를 만들고 싶은데, 면의 수는 기본으로 
+// 6면이 되고 싶다. 사용자가 원한다면 면의 수를 다르게 설정하고 싶다.
+// 한번 만들어진 인스턴스는 도중에 면의 수를 바꿀 수 없다.
+
+Dice d1 = new Dice(); // 6면 기본생성자
+DIce d2 = new Dice(9) // 9면
+
+기본생성자가 - 생성자가 파라미터로 아무것도 안받아들인다면 이것을 우리는 기본 생성자라고 한다.
+
+```java
+public class MemberTest {
+    
+    public static void main(String[] args) {
+        // new Member : Member 1.인스턴스가 만들어진다.
+        // Member(String) :    2.생성자가 호출된다.
+       
+        Member m1 = new Member("홍길동");
+        Member m2 = new Member("둘리");
+    }
+}
+```
+
+```java
+public class Memeber {
+    
+}
+// 컴파일 되면 Member.class 파일이 만들어진다.
+// jad를 이용하여 디컴파일 하였다.
+//
+// public class Memeber
+// {
+//		public Member()
+// 		{
+//		}
+// }
+```
+
+// http:://varaneckas.com/jad/
+// jad : 
+
+
+
+생성자를 하나도 만들지 않으면, 컴파일 할 때 아무일도 하지 않은 기본 생성자가 자동으로 만들어진다.
+
+// 생성자 
+접근지정자 클래스이름(파라미터){
+
+}
+
+
+
+// Member 라는 class가 있다
+// Member는 반드시 이름을 가지도록 하고 싶다.
+// 이름은 인스턴스가 만들어질때 정해주고 싶다.
+
+```java
+public class Member {
+    // 이름을 가진다.
+    // private - 해당 클래스 안에서만 사용가능.
+    // 외부에서는 name을 접근 할 수 없다.
+    private String name; // 멤버는 이름을 가지고 있다. private은 외부에서 사용할 수 없다.
+    
+    // 괄호안에 있는 것은 생성자에게 전달하는 파라미터
+	// 괄호안에 선언된 String name --> 파라미터
+    // this.name : 해당 인스턴스가 가지는 속성. 필드
+    public Member(String name){
+        this.name = name;
+    }
+}
+```
+
+​    
+```JAVA
+public class MemberTest {
+	public static void main(String[] args) {
+    	// new Member : Member 1.인스턴스가 만들어진다.
+    	// Member(String) :    2.생성자가 호출된다.
+        // 즉 먼저 인스턴스가 만들어지고 나서 생성자가 호출된다.
+        // 인스턴스가 만들어졌다는 것은 멤버가 메모리에 올라가 있고
+        // 멤버가 가지고 있는 속성 name도 메모리에 올라가 있다.
+        // 그래서 this.name = name이 초기화가 됩니다.
+    	Member m1 = new Member("홍길동");
+    	Member m2 = new Member("둘리");
+        
+        // System.out.println(m1.name);
+        // System.out.println(m2.name);
+        System.out.println(m1.getName());
+        System.out.println(m2.getName());
+        
+	}
+}
+```
+
+
+```java
+
+public class Member {
+   	// name은 인스턴스 별로 관리가 된다.
+    // name: 속성, 필드, 인스턴스변수(용어 알고 있기)
+    private String name; // 멤버는 이름을 가지고 있다. private은 외부에서 사용할 수 없다.
+    
+    // 괄호안에 있는 것은 생성자에게 전달하는 파라미터
+	// 괄호안에 선언된 String name --> 파라미터
+    // this.name : 해당 인스턴스가 가지는 속성. 필드
+    public Member(String name){
+        this.name = name;
+    }
+    
+    // public 메소드는 어디에서든 호출할 수 있다.
+    public String getName(){
+        return this.name;
+    }    
+}
+```
+
+**클래스가 생성자를 하나라도 가지고 있다면 자동으로 기본생성자는 만들어지지 않는다.**
+
+
+
+```java
+public calss Dice {
+    // 속성으로 면의 수를 가지고 싶다.
+    
+    private int faceCount;
+    
+    public Dice(){ // 기본생성자
+    	this.faceCount = 6;            
+    }
+    
+    public int getFaceCount() {
+        return this.faceCount;
+    }
+    
+    public Dice(int faceCount) throw IllegalArgumentException {
+        if(faceCount <= 1){
+            throw new IllegalArgumentException("면의 수는 2이상이어야 합니다.")
+        }
+        this.faceCount = faceCount;
+    }
+}
+```
+
+```java
+public class DiceTest {
+    public static void main(String[] args) {
+        Dice d1 = new Dice();
+        Dice d2 = new Dice(9);
+        System.out.println(d1.getFaceCount()); // 6
+
+        
+        try {
+            Dice d2 = new DIce(0);
+            System.out.println(d2.getFaceCount()); // 9
+        } catch (IllegalArgumentException e){
+            System.out.println("면이 2개 이상있어야 합니다.");
+        }
+        
+    }
+    
+}
+```
+
+
+
+
+
+
+
+```java
+public class Car {
+    
+    private String name;
+    
+    
+    
+    // Car기본생성자를 문자열을 받아들이는 생성자로 수정
+    // 생성자가 하나라도 있따면 기본생성자는 만들어지지 않는다.
+    // 그래서 Bus b1 = new Bus(); 가 에러가 난다.
+    /
+    public Car(String name){
+        this.name = name;
+        System.out.println("Car생성자");
+    }
+    
+}
+```
+
+```java
+public class Bus extends Car {
+    
+    
+    public Bus() {
+        super(); //  super는 부모를 의미한다.
+        		 //  super() - 부모의 기본생성자
+    }			
+    			// Bus생성자에 아무것도 안적어줘도 자바버추얼머신은 가장 먼저 이안에 
+    			// 부모생성자를 호출하는 코드를 자동으로 만들어줘서 실행해줍니다.
+    			// 부모의(Car)의 기본생성자가 없으면 Bus() 부모의 생성자 호출메소드인
+    			// super()을 자동으로 해출해주만 Car() (부모)에 기본생성자가 없어서 에러가 난다.
+    
+   public Bus() {
+      super("b1"); // 부모가 기본생성가 없다면
+       			// 반드시 프로그래머가 부모 생성자를 직접 호출.
+       			// 해줘야 오류가 나지 않는다.
+ 
+   }
+}
+```
+
+```java
+public class CarTest {
+    public static void main(String[] args){
+        Bus b1 = new Bus(); // Car생성자
+    }
+}
+// Bus인스턴스가 만들어진다는 것은 
+// Bus의 부모인 Car도 초기화가 되어야 한다는 것을 의미한다.
+```
+
+
+
+
+
+
+
+
+
+```java
+public class StudentTest {
+    public static void main(String args[]) {
+        Student s1 = new Student("홍길동, 90, 90, 100");
+        
+        //s1.setName("홍길동");
+        System.out.println(s1.getName()); // 홍길동
+        System.out.println(s1.getKor());
+        System.out.println(s1.getEng());
+        System.out.println(s1.getMath());
+
+    }
+}
+```
+
+```java
+public class Student {
+    private String name;
+    private int kor;
+    private int math;
+    private int eng;
+    
+    // 코드의 중복은 되도록 막아야 한다.
+    public Student(String name) {
+       this(name, 0, 0, 0); // public Student(String name, int kor, int math, int eng) 
+        					// 이 생성자를 호출함
+     						// this는 자기 자신을 가리킨다
+        					// 자기 자신의 생성자를 호출하려면 this( ); 해주면 된다.
+        					// 보통 파라미터가 적은 쪽에서 파라미터가 많은 쪽으로 호출해줌 
+        
+        //this.name = name;
+        //this.kor = 0;
+        //this.math = 0;
+        //this.eng= 0;
+    }
+    
+    public Student(String name, int kor, int math, int eng){
+        this.name = name;
+        this.kor = kor;
+        this.math = math;
+        this.eng = eng;
+    }
+    
+    ... getter setter만들어짐
+    
+    // getter - 외부에서 필드를 읽을 수 있도록 도와주는 메소드
+    // setter - 외부에서 필드의 값을 수정하도록 도와주는 메소드
+    // source - GenerateGetters and Setters
+    
+    
+}
+```
+
+자기 자신의 생성자를 호출.
+파라미터가 적은쪽의 생성자에서
+많은 쪽의 생성자를 부르는 경우가 많다.
+
+
+
+
+
+**접근 지정자**
+
+```java
+public class MathTest {
+    
+    public static void main(String[] args){
+        //MyMath m = new MyMath(); // 이부분에세 에러가 된다. 생성자가 private이여서.
+        System.out.println(MyMath.abs(-50)); // 50
+    }
+}
+```
+
+```java
+public class MyMath {
+    // 생성자가 private하면, 생성자는 있지만
+    // 외부에서는 호출할 수가 없다.
+    // 외부에서 생성자를 이용하여 인스턴스를 생성 못한다.
+    private MyMath() { // private는 이 클래스 안에서만 생성할 수 있다.
+        			
+    }
+    
+    //혹은 생성자가 없어도 클래스를 사용할 수 있음
+    public static int abs(int value) {
+        if(value < 0)
+            return value * -1;
+        else 
+            return value;
+    }
+}
+```
+
+
+
+생성자에 private이 붙으면 어떻게 되는가? 
+java.lang.Math 는 인스턴스를 만들지 말고 사용하라는 것임 static
+
+
+
+인스턴스를 만든다는 것은 메모리에 하나씩 인스턴스가 만들어진다.는 뜻입니다.
+인스턴스를 만드다는 것은 인스턴스간에 구별을 하기 위해서임
+인스턴스간의 구별은 속성으로 구별됨 -== 인스턴스 변수다
+
+2명의 학생이 있다면.... 그 학생의 이름으로 구별함
+2명의 학생이 있다는 그 자체.로 구별이 되는 것이다
+
+이름이 같다라도해도 두명의 학생을 표현하고 싶을때는 인스턴스가 필요하다.
+구별되는 사람이 10명이 있다. 그러면 인스턴스를 10개를 만들어준다.
+
+접근지정자에 대한좀더 자세한내용은. package를 배우고 나서 좀더 자세히 설명을 드릴 것ㅇ ㅣㅂ니다.
+
+
+
+오늘은 숙제.
+싱글턴 패턴에 대하여 조사하고, 예제 코드를 작성하시오.
