@@ -973,8 +973,9 @@ Action action = new Action(); // (x) 인터페이스는 선언만 된 껍데기�
 
 action.exec();
 
-**조상type으로 후손 인스턴스를 참조할 수(가리킬 수) 있다.**
-**인터페이스type으로 해당 인터페이스를 구현하고 있는 클래스의 인스턴스를 참조할 수(가리킬 수) 있다.**
+### **조상type으로 후손 인스턴스를 참조할 수(가리킬 수) 있다.**
+
+## **인터페이스type으로 해당 인터페이스를 구현하고 있는 클래스의 인스턴스를 참조할 수(가리킬 수) 있다.**
 
 
 
@@ -1718,7 +1719,7 @@ public class MyBean {
     }
     
   //  MyBean() {
-  //      // public을 빼게 되면 다른 패키지에서 MyBean bean = enw MyBean()을 해주면 에러남
+  //      // public을 빼게 되면 다른 패키지에서 MyBean bean = new MyBean()을 해주면 에러남
   //      // public가 없으면 다른 패키지에서는 MyBean클래스가 보이지 않음
   //  }
     //생성자에서는 
@@ -1756,7 +1757,7 @@ import kr.co.sunnyvale.examples.MyBean;
 
 public class MyBeanChild extends MyBean{
     public MyBeandChild() {
-        super.protectedInt = 100; // 자기 자신이 protextedInt를 가지고 있지 않아서 
+        super.protectedInt = 100; // 자기 자신이 protectedInt를 가지고 있지 않아서 
         					      // protextedInt = 100; 이라고 해도 오류나지 않음
         
         
@@ -1892,7 +1893,7 @@ public class MyBeanTest {
 
 싱글턴패턴 
 메모리에 하나만 인스턴스가 있다면 어떤 문제가 있을 수 있을까요?
-동시에! 동시라는 말이 나오면 Thread를 생각해야함
+**동시에! 동시라는 말이 나오면 Thread를 생각해야함**
 
 오늘의 숙제
 지금 설명한 CalBean 직접 작성하고
@@ -1909,9 +1910,13 @@ public class MyBeanTest {
 
 스태틱한 메소드를 사용할 수 있따는 것은 스태틱한 필드도 초기화되어있다(private static CalBean instance = new CalBean(); 
 
-**프로그래머는 무엇인가 프로그램을 만들고나서 강해진다.**
+## **프로그래머는 무엇인가 프로그램을 만들고나서 강해진다.**
 
 
+
+
+
+# 즐거운 자바 12편 - 상속, 추상클래스, 템플릿메소드패턴
 
 상속. 
 is a 관계 
@@ -1919,9 +1924,13 @@ is a 관계
 ~는 ~의 한 종류다.
 (자식) 부모를 상속받은 후 자식은 확장한다.
 버스, 스포츠카, 트럭은 자동차라고 부를 수 있다.(일반화)
-상속 = 확장 + 일반화
+
+## **상속 = 확장 + 일반화**
+
+상속관계를 알아야만 클래스를 이해할 수 있음
+
 아무것도 상속받지 않으면 자동으로 Object클래스를 상속받는다.
-버스가 무엇인지 이해하려면 자동차가 무엇인지 알아야 된다.
+**버스가 무엇인지 이해하려면 자동차가 무엇인지 알아야 된다.**(어떤 클래스를 이해하려면 부모클래스를 이해해야한다.)
 
 
 
@@ -1931,17 +1940,445 @@ is a 관계
 노트북은 컴퓨터의 한 종류다.
 
 말이 안되게 상속받으면 안된다.
+문법은 맞았지만 말인 안되면 상속받으면 안된다. (침대는 과학이다.)
 말이 되게 상속을 받아야 한다.
 
-
-
+```java
 class 버스 extends 자동차 { // 버스는 자동차를 상속받는다.
 
 }
+```
 
 
 
 ```java
+package kr.co.sunnyvale.examples;
+
+public class Car {
+    public void run() {
+        System.out.printlnt("전륜구동-엔진");
+    }
+}
+```
+
+```java
+package kr.co.sunnyvale.examples;
+
+public class CarTest1 {
+    public static void main(String[] args) {
+        Car c1 = new Car();
+        c1.run(); // 전륜구동
+        
+        Bus b1 = new Bus();
+        b1.run(); // 부모가 가진 것을 그대로 물려받아서 사용한다.
+        b1.bigppangppang(); // 확장한 메소드
+    }
+}
 
 ```
 
+```java
+package kr.co.sunnyvale.examples;
+
+public class Bus extends Car {
+    publicv void bigppangppang() {
+        System.out.println("큰소리로 빵빵한다.");
+    }    
+}
+```
+
+- 공장. ----> 물건을 만드는 단계가 일정하다. -- 공장들은 대부분 이럴거야 하는 추상적인 공장
+  ​		 init() // 초기화 과정
+  ​		 make(); //만드는 과정
+  ​		 clear(); // 청소하는 과정.
+
+  단계는 같지만....  각 단계의 내부적인 그 내부적인 일처리는 달라질 수 있다.
+
+------ 자동차공장, 오토바이 공장, 트럭공장. ----> 공정 3가지 단계는 동일함 -- 진짜 공장
+
+
+
+
+
+````java
+package kr.co.sunnyvale.examples; // 패키지 같은
+
+// 추상클래스.
+// 공장은 이런 기능을 가질꺼야.... 라고 생각만 한 것임
+// 구체적으로 무엇을 구현한 것은 아님
+public abstract class AbstractFactory {
+    public abstract void init();
+    public abstract void make();
+    public abstract void clear();
+}
+````
+
+```java
+package kr.co.sunnyvale.examples;// 패키지 같은
+
+public Class CarFactor extends AbstractFactory {
+	
+    @Override
+    public void init() {
+     	
+    }
+    
+     @Override
+    public void make() {
+        
+    }
+    
+     @Override
+    public void clear() {
+        
+    }
+    
+    
+}
+```
+
+
+
+
+
+
+
+```java
+package kr.co.sunnyvale.examples; //패키지 다름
+
+public abstract class AbstractFactory {
+    protected abstract void init();  //protected는 같은 패키지나 상속받은 클래스에서 사용가능
+    protected abstract void make();
+    protected abstract void clear();
+}
+```
+
+```java
+package kr.co.sunnyvale.test; //패키지 다름
+
+import kr.co.sunnyvale.examples.AbstractFactory;
+
+public class CarFactory extends AbstractFactory {
+        @Override
+    protected void init() {
+     	System.out.println("자동차 공정 초기화")
+    }
+    
+     @Override
+    protected void make() {
+        System.out.println("자동차를 만듭니다.");
+    }
+    
+     @Override
+    protected void clear() {
+        System.out.println("자동차 공장 청소");
+    }
+}
+
+
+
+```
+
+```java
+package kr.co.sunnyvale.main // 패키지 다름
+
+public class FactoryTest01 {
+    public static void main(String[] args) {
+        CarFactory factory = new CarFactory();
+        factory.init(); // 오류남 오류이유는? 
+        				// protected는 상속받거나 같은 package에서만 사용가능	
+    }					// 오류안나게 하려면 추상클래스를 public으로 변경해주고 상속받은 CarFactoy의 상속받은 메소드도 자연스럽게 public로 변경됨 그렇게 해야만 에러가 나지 않음
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+
+import kr.co.sunnyvale.examples.AbstractFactory;
+
+public class BusFactory extends AbstractFactory {
+        @Override
+    protected void init() {
+     	System.out.println("버스 공정 초기화")
+    }
+    
+     @Override
+    protected void make() {
+        System.out.println("버스를 만듭니다.");
+    }
+    
+     @Override
+    protected void clear() {
+        System.out.println("버스 공장 청소");
+    }
+}
+
+
+
+```
+
+
+
+
+
+- 자동차 공장은 공장입니다.
+- 자동차 공장은 공장의 한 종류입니다.
+- 카팩토리나 버스팩토리는 앱스트랙트팩토리의 자식이기 때문에 앱스트랙트팩토리타입으로 각각의 인스턴스를 참조할 수 있다.
+
+```java
+package kr.co.sunnyvale.main // 패키지 다름
+
+import kr.co.sunnyvale.examples.AbstractFactory;
+import kr.co.sunnyvale.test.CarFactory;
+
+public class FactoryTest01 {
+    public static void main(String[] args) {
+        AbstractFactory factory = new CarFactory(); // 조상타입으로 후손 인스턴스를 참조함
+        factory.init();                            // 앱스트랙트팩토리의 추상메소드가 public													// 이라고 가정함
+}
+```
+
+```java
+package kr.co.sunnyvale.main // 패키지 다름
+
+import kr.co.sunnyvale.examples.AbstractFactory;
+import kr.co.sunnyvale.test.BusFactory;
+
+public class FactoryTest01 {
+    public static void main(String[] args) {
+        AbstractFactory factory = new BusFactory(); // 조상타입으로 후손 인스턴스를 참조함
+        factory.init(); 
+}
+```
+
+
+
+
+
+```java
+package kr.co.sunnyvale.examples; //패키지 다름
+
+public abstract class AbstractFactory {
+    // 추상클래스는 구현되어 있는 메소드도 가질 수 있다.
+    // final 메소드 - 오버라이딩을 금지.  자식이 오버라이딩 하는 것을 금지함
+    public final void exec(){   // 자기 자신이 가지고 있는 메소드를 호출해줌 exec();  
+        // 왜 이렇게 구현을 했을까요?
+        // 책도 보면 서론, 본론, 결론
+        // 각단계가 나뉘어져 있으면 코드 분석이 어떻게 될까요? 
+        // 쉬워짐 직관
+        init();
+        make();
+        clear();
+    }
+    
+    // 추상메소드
+    // 메소드가 오버라이딩 되어 있으면 자식의 메소드가 실행된다.
+    protected abstract void init();  //protected는 같은 패키지나 상속받은 클래스에서 사용가능
+    protected abstract void make();
+    protected abstract void clear();
+}
+```
+
+```java
+package kr.co.sunnyvale.main // 패키지 다름
+
+import kr.co.sunnyvale.examples.AbstractFactory;
+import kr.co.sunnyvale.test.BusFactory;
+
+public class FactoryTest01 {
+    public static void main(String[] args) {
+        AbstractFactory factory = new BusFactory(); // 조상타입으로 후손 인스턴스를 참조함
+        // 부모타입
+        
+        factory.exec(); // 결과 
+        				// 버스 공장 초기화
+        				// 버스를 만들어요.
+        				// 버스공장 청소
+}
+```
+
+
+
+
+
+- 공장. ----> 물건을 만드는 단계가 일정하다. -- 공장들은 대부분 이럴거야 하는 추상적인 공장
+  3가지 단계를 순서대로 호출해주는 메소드가 exec() 메소드다. 
+  아래 메소드들을 순서대로 호출해주는 역할만하죠? -- **순서만 기억하죠 이런 것을 템플릿메소드다**
+  **템플릿메소드는 순서를 정한다.**
+
+  ​		 init() // 초기화 과정
+  ​		 make(); //만드는 과정
+  ​		 clear(); // 청소하는 과정.
+
+  단계는 같지만....  각 단계의 내부적인 그 내부적인 일처리는 달라질 수 있다.
+
+  ------ 자동차공장, 오토바이 공장, 트럭공장. ----> 공정 3가지 단계는 동일함 -- 진짜 공장
+  ​	**자식클래스에서는 오버라이딩만해줌**
+
+  공장 f = new 버스공장();
+  f.exce(); // 버스공장에서 오버라이딩된 메서드가 호출됨
+
+  공장 f = new 오토바이공장(); 
+  f.exec(); // 오토바이공장에서 오버라이딩된 메서드가 호출됨
+
+
+
+**왜? exec만 public이고 , 왜 다른 메소드는 protected로 만들었을까?** exec만 사용하려고
+
+**~~공장을 만든다고 생각해보자 ( 공장을 만드는 사람의 입장으로 생각 )**
+init();
+make();
+clear(); 를 만들어줘야한다.
+
+**공장을 실행하는 사람은 어떤 메소드만 사용하면 되나요?**
+exec()메소드만 사용하면 됨
+
+
+
+접근제한자는 어떻게 쓰는지 알겠죠?
+**접근제한자는 신호등을 만드는 것.**
+지금 이 상황에서는 이 메소드를 쓰면 안되
+지금 이상황에서는  이 메소드를 사용해야 되
+
+**final를 왜 붙였죠? 오버라이딩 못하게 막기 위해서**
+오버라이딩 방지하기 위해서
+final을 붙이지 않았따면 exce()가 오버라이딩 되고
+상속해서 오버라이딩을 구현하게 되면 무조건 자식의 메소드가 사용됨 
+그럼 내가 의도한데로 작동하지 않음
+
+
+
+템플릿메소드는 순서를 정해주는 것이다.
+
+
+
+위에서 설명한 것은 템플릿메소드 패턴이라고 함.
+**추상클래스는 보통 이러한 템플릿 메소드 패턴에서 많이 사용한다.**
+부모에서 순서를 정해주고
+나머지 메소드는 구현을 안해줬다. 자식에서 이것을 구현해주도록 하는 것이다.
+이런 개념이다.
+
+오늘의 숙제. 템플릿메소드패턴에 대하여 조사. 예제 만들어오기
+
+
+
+
+
+```java
+package kr.co.sunnyvale.examples;
+
+public class Test01 {
+    public static void main(String[] args){
+        TestBean01 bean = new TestBean01();
+        bean.exec();
+    }
+}
+
+class TestBean01 {
+    public void exec(){
+        System.out.println("exec");
+        
+        System.out.println("1");
+        System.out.println("2");  	// 개념적으로 나뉜다.
+        System.out.println("3");
+        
+        System.out.println("a");
+        System.out.println("b");	// 개념적으로 나뉜다.
+        System.out.println("c");
+        
+        System.out.prinlnt("가");
+       	System.out.println("ㄴ");	// 개념적으로 나뉜다.
+        System.out.prinlnt("1");
+    }
+}
+```
+
+
+
+```java
+class TestBean01 {
+    public void exec(){
+        System.out.println("exec");
+       	init();
+        service();
+        destory();
+    }
+    
+    private void destory(){
+        System.out.println("1");
+        System.out.println("2");  	// 개념적으로 나뉜다.
+        System.out.println("3");
+    }
+    
+    private void service(){
+        System.out.println("a");
+        System.out.println("b");	// 개념적으로 나뉜다.
+        System.out.println("c");
+    }
+    
+    private void init(){
+        System.out.prinlnt("가");
+       	System.out.println("ㄴ");	// 개념적으로 나뉜다.
+        System.out.prinlnt("1");
+    }
+```
+
+- private 메소드는 외부에서는 호출할 필요가 없다.
+
+- private 메소드를 만드는 장점은? 
+
+  - 정리가 잘되어서 나중에 유지보수가 쉬워진다.
+  -   public void exec(){
+      ​        System.out.println("exec");
+      ​       	init();
+      ​        service();
+      ​        destory();
+      ​    }
+
+  - 메소드는 되도록이면 한화면에 보이는게 제일 좋다. 
+  - 주석문 많이 다는 것 보다는 이런식으로 메소드가 잘 나눠저 있는게 좋은 거다.
+
+
+
+**오늘 설명한 내용은 상속,  추상클래**스
+
+
+
+- 추상클래스는 언제사용해요?
+
+  - 말그대로 인스턴스가 되면 안된다
+  - 인스턴스가 될수가 없다.
+  - 개념적인 것만 있지 실제로 구현된 것이 없다. 몇가지 메소드가 개념적인 것만 있다.
+  - 현실에 있으면 안되는 거예요. 구체적이 않자나요.
+  - 구체적은 것은 뭐예요? 자동차공자장, 오토바이공장 이런것이  구체적인 것이라고 한다.
+  - 개념적인 것만 있고 구체적이지 않다면 얘네들은 추상클래스이다.
+  - 추상클래스는 뭐가 될수없다? 인스턴스가 될 수 없다.
+
+- abstrackt메서드는 추사메소드라고 하고  자식에서 구현을 해줘야한다.
+
+- final이 붙은 메소드는 자식이 오버라이딩 할 수없다.
+
+- 메소드가 오버라이딩 되면 항상 자식의 메소드가 실행이됨
+
+- 추상클래스는 언제 많이 사용된다? 추상클래스는 템플릿메소드패턴에서 사용이된다.
+
+- 탬플릿메소드 패턴은 부모쪽에서 순서 정해준 것이 템플릿메소다.
+
+- 각각의 단계에 대한 실질적인 구현은 자식에다가 맡기는 것이 탬플릿메소드 패턴이다.
+
+- 사실 프로그램짤때 상속받는 일은 많지 않을수 있다. 초보자들은 상속을 많이 이용하려고 하지 마세요. 되도록이면.  초보자들은 상속을 사용하지 마세요. 상속을 사용하지 않고 프로그램을 짜는게 좋다. 
+
+   
+
+- 필드는 오버라이딩에서 신경쓰지 않아야한다. 필드는 클래스가 가지는 것이다. 
+
+- 필드는 보통 private이기 때문에 상속받는 입장에서는  사용하는 입장에서는 필드는 모르고 신경쓰지 않아도됨
+
+
+
+상속받을 때마다 필드는 새로정의 해주나요?
+
+자동차를 상속받는 버스는  돈통이 있다.
+버스는 돈통이 있따. 버스는 돈통을 가지는 것이다.
+돈통은 기능이 아니라 필드(속성)이 되겠죠.
+그럴떄는 돈통을 추가해주는 것이죠.
