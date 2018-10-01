@@ -1231,7 +1231,7 @@ throws는 메소드에서만 사용합니다. throws는 익셉션을 발생하�
 
 
 
-## 즐거우 자바 10편 - 생성자, this, super
+## 즐거운 자바 10편 - 생성자, this, super
 
 접근지정자, 생성자, this와 super
 
@@ -1491,7 +1491,7 @@ public class Bus extends Car {
     			// Bus생성자에 아무것도 안적어줘도 자바버추얼머신은 가장 먼저 이안에 
     			// 부모생성자를 호출하는 코드를 자동으로 만들어줘서 실행해줍니다.
     			// 부모의(Car)의 기본생성자가 없으면 Bus() 부모의 생성자 호출메소드인
-    			// super()을 자동으로 해출해주만 Car() (부모)에 기본생성자가 없어서 에러가 난다.
+    			// super()을 자동으로 호출해주면 Car() (부모)에 기본생성자가 없어서 에러가 난다.
     
    public Bus() {
       super("b1"); // 부모가 기본생성가 없다면
@@ -1635,3 +1635,313 @@ java.lang.Math 는 인스턴스를 만들지 말고 사용하라는 것임 stati
 
 오늘은 숙제.
 싱글턴 패턴에 대하여 조사하고, 예제 코드를 작성하시오.
+
+
+
+
+
+## 즐거운 자바 11편 - 접근제한자. static 싱글턴 패턴
+
+class가 많아지면 ... 어떻게 관리하느냐?
+class는 어떤 특정 폴더에 저장되어 있다.
+한 폴더에 파일이 많이지면 관리가 어렵다.
+관련된 파일들을 폴더별로 나눠서 관리를 한다.
+자바에서도 class를 폴더별로 관리를 한다.
+자바에서는 이 폴더 -> package라고 말을 한다.
+
+자바 사용자는 다른 사람들이 만든 클래스를 이용할때가 많다.
+한 폴더에는같은 이름의 클래스가 여러개 올수가 없다.
+
+내가 만든 패키지와 상대방이 만든 패키지가 같고,
+그안의 파일명도 같다면. 함께 사용할 수 없다.
+
+그래서 클래스를 만드는 사람들은 고유의 패키지를 만들 필요가 있다.
+보통패키지 이름은 도메인이름을 거꾸로 적는다.
+sunnyvale.co.kr ---> package이름 --> kr.co.sunnvyale
+
+도메인 이름을 거꾸로 적는다 + 프로젝트 이름 + 모듈이름
+위의 형식이 많이 사용됩니다.
+
+goclass <-- 프로젝트 이름
+kr.co.sunnyvale.goclass
+kr.co.sunnyvale.goclass.dao // 데이터 관련이 추가된다 하면 뒤에 dao를 붙인다. <-- 이렇게 package이름을 정했다는 것은 kr 폴더 - co 폴더 - sunnyvale폴더 - goclass폴더 - dao폴더 - 클래스파일들
+
+JVM은 CLASSPATH에 잡혀있는 클래스들을 사용할 수 있다.
+CLASSPATH는 kr 폴더가 있는 경로가 설정되어있어야 JVM에서 사용할 수 있다.
+
+```java
+package kr.co.sunnyvale.examples;
+// MyBean은 kr.co.sunnyvale.examples 패키지에 속해있다.
+
+public class MyBean {
+    
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+// package안에 클래스를 만든다면 반드시 첫번째 줄에 
+// package 하고 해당클래스가 속해있는 패키지명이 나와야함
+// console에서 컴파일할때는 package이 있는 소스는 컴파일할때 -d 옵션을 줘야 지마노딘다.
+// javac -d 패키지가 생설될 경로 소스명
+// javac -d c:/tmp 소스명.java  <-- temp/kr/co/sunnyvale/test/ 이런식으로 폴더가 생김
+// 자동 import : ctrl + shift + 영어o
+public class MyBeanTest {
+    public static void main(String[] args)
+}
+```
+
+package를 가지는 소스를 2개 만들었다.
+kr.co.sunnyvale.examples : MyBean
+kr.co.sunnvyale.test : MyBeanTest
+
+15분 수업하고 질문 받기
+
+이렇게 두가지 패키지에 각각의 클래스를 만들었어요. 패키지를 정해줬다는 것은 어떤 클래스가 어디에 위치하고 있다 이런 뜻이라고 보면되요. MyBeanTest
+
+
+
+```java
+package kr.co.sunnyvale.examples;
+// MyBean은 kr.co.sunnyvale.examples 패키지에 속해있다.
+
+public class MyBean {
+    protected int protectedInt;
+    public int publicInt;
+    private int privateInt;
+    int defaultInt;   
+    
+    
+    // 자동으로 만들어지는 생성자는 기본생성자라고 불린다.
+    public MyBean() {
+        
+    }
+    
+  //  MyBean() {
+  //      // public을 빼게 되면 다른 패키지에서 MyBean bean = enw MyBean()을 해주면 에러남
+  //      // public가 없으면 다른 패키지에서는 MyBean클래스가 보이지 않음
+  //  }
+    //생성자에서는 
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+
+public class MyBeanTest {
+    
+    public static void main(String[] args) {
+        MyBean bean = new MyBean();
+        bean.publicInt = 100;
+    }
+}
+```
+
+자바 접근제한자 4가지가 있다.
+
+- public : 어디서든 접근 가능.
+- protected : 같은 package, 다른 package지만 상속받은 자식에서 접근이 가능
+  protected 를 가지고 있는 클래스를 상속받은 다른 패키지의 자식은 접근이 가능
+- 아무것도 안붙어 있는 것 (default접근제한자) : 같은 package만 접근 할 수 있음
+- private: 해당 클래스 안에서만 접근 할 수 있다.
+
+4가지 접근제한자는 필드나 메소드 등에 붙을 수 있다. ( 4가지 꼭 암기 하기)
+
+
+
+```java
+package kr.co.sunnyvale.test;
+
+import kr.co.sunnyvale.examples.MyBean;
+
+public class MyBeanChild extends MyBean{
+    public MyBeandChild() {
+        super.protectedInt = 100; // 자기 자신이 protextedInt를 가지고 있지 않아서 
+        					      // protextedInt = 100; 이라고 해도 오류나지 않음
+        
+        
+        // 상속을 받는 다고 하더라도 생성자는 접근지정자가 없으면 생성이 안됨
+        // 생성자는 보통 public 로 써줘야만 인스턴스를 만들 수 있음
+    }
+}
+```
+
+```java
+package kr.co.sunnyvale.examples;
+
+public class MyBeanTest2 {
+    public static void main(String[] args) {
+        MyBean bean = new MyBean();
+        bean.defaultInt = 600;
+        bean.protectedInt = 1000;  
+    }
+}
+```
+
+
+
+class가 생성자가 없으면 컴파일 시점에 자동으로 생성자가 만들어진다.
+모든 클래스는 반드시 생성자가 있다.
+
+java api에서 Math
+Math는 private한 생성자를 가지고있어서 생성자가 api에서 보이지 않음 그래서 Math math = new Matn();를 못만듬
+
+
+
+
+
+# 한손을 들어서 자기자신을 가리켜본다.
+
+```java
+class Human {
+    private Human hand; // Human은 참조타입이다. // hand는 Human을 참조할 수 있다.
+    					// 사람이 사람을 가리킬 수 있는 손이 있다라는 것이다
+    
+}	
+```
+
+
+
+
+
+
+
+```java
+package kr.co.sunnyvale.examples;
+
+
+public class CalBean {
+    public int x;
+    // 그때 나오는게 위의 3가지 규칙을 지켜서 만드는 클래스는 싱글턴패턴이 적용되었다.
+    
+    // 2) private 하지만 static한 필드를 선언 ( 자기 자신을 참조한다 == 자기 자신을 가리킨다)
+    // 	  자기 자신의 생성자를 호출하여 초기화한다.
+    //    static은 인스턴스가 만들어지기 전에 호출되는 코드. 딱 한번 초기화된다.
+    private static CalBean instance = new CalBean();
+    // 왼쪽만 보면 CalBean이라는 인스턴스를 가리킬 수 있는 레퍼런스 변수를 선언하겠다.
+    // 오른쪽값만 보면 초기화값
+    
+    // 3) 2번에서 선언한 instance를 반환하는 public static메소드를 만든다.
+    public static CalBean getInstance(){
+        return instance;
+    }
+    
+    // 1) private한 생성자를 만듬. 외부에서 인스턴스를 못만들게 하겠다.
+    private CalBean(){
+        
+    }
+    
+    public int puls(int i, int m) {
+        return i + m;
+    }
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+
+public class CalBeanTes {
+    public static void main(String[] args){
+       
+        CalBean cal = new CalBean(); // 에러남
+        CalBean bean = CalBean.getInstance();
+        CalBean bean2 = CalBean.getInstance();
+        
+        // 참조가 같은가?
+        if (beam == bean1) {
+            
+        }
+        
+        int value = bean.plus(5, 10);
+        System.out.println(value);
+        
+        bean.x = 500;				// 500  메모리에 하나만 있어서 한쪽을 수정하면 bean2.x도 수정이 됨. 또한 동시에 이용하면 문제가될 수 있음
+        System.out.println(bean2.x);  // 500
+        SYstem.out.println();
+        
+    }
+}
+```
+
+```java
+public class MyBeanTest {
+    public static void main(String[] args) {
+        
+        
+        
+        MyBean bean = new MyBean();
+        MyBean bean2 = new MyBean();
+        MyBean bean3 = new MyBean();
+        MyBean bean4 = new MyBean();
+        // 위의 4줄의 코드가 실행되면 인스턴스가 4개 만들어진다.
+        // 인스턴스를 4개 만드는 이유는?
+        // 각각의 인스턴스가 구별되어야 하기 때문.어떤 의미?
+        // 사람에 대한 class가 있다. class는 인스턴스의 틀.
+        // 여러분들과 저는 구별이 되나요? 
+        // 굉장히 중요함 --> 존재자체로 구별이 된다.
+        // 객체지향은 객체가 있다라는 것 자체가 구별이 되는 것임
+        // 각각의 인스턴스를 왜 구별하느냐? 구별해서 사용해야하니깐
+        // 그런데 나는 인스턴스가하나만 만들고 싶다!!!
+        // 그때 나오는게 위의 3가지 규칙을 지켜서 만드는 클래스는 싱글턴패턴이 적용되었다.
+        
+    }
+}
+```
+
+
+
+싱글턴패턴 
+메모리에 하나만 인스턴스가 있다면 어떤 문제가 있을 수 있을까요?
+동시에! 동시라는 말이 나오면 Thread를 생각해야함
+
+오늘의 숙제
+지금 설명한 CalBean 직접 작성하고
+싱글턴패턴에 대하여 다시 조사해서 설명하기
+(여러분들 나름대로 설명하기)
+
+**이해한다는 것은 설명할 수 있다.**
+
+
+
+여기까지 내용중에서 질문!!
+
+
+
+스태틱한 메소드를 사용할 수 있따는 것은 스태틱한 필드도 초기화되어있다(private static CalBean instance = new CalBean(); 
+
+**프로그래머는 무엇인가 프로그램을 만들고나서 강해진다.**
+
+
+
+상속. 
+is a 관계 
+~는 ~다. 
+~는 ~의 한 종류다.
+(자식) 부모를 상속받은 후 자식은 확장한다.
+버스, 스포츠카, 트럭은 자동차라고 부를 수 있다.(일반화)
+상속 = 확장 + 일반화
+아무것도 상속받지 않으면 자동으로 Object클래스를 상속받는다.
+버스가 무엇인지 이해하려면 자동차가 무엇인지 알아야 된다.
+
+
+
+버스는 자동차다.
+버스는 자동차의 한 종류다.
+노트북은 컴퓨터다.
+노트북은 컴퓨터의 한 종류다.
+
+말이 안되게 상속받으면 안된다.
+말이 되게 상속을 받아야 한다.
+
+
+
+class 버스 extends 자동차 { // 버스는 자동차를 상속받는다.
+
+}
+
+
+
+```java
+
+```
+
