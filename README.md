@@ -1,4 +1,4 @@
-
+ 
 
 ## 즐거운 자바 04 -  new 연산자와 인스턴스, static 키워드와 Hello 실행순서
 
@@ -2382,3 +2382,211 @@ class TestBean01 {
 버스는 돈통이 있따. 버스는 돈통을 가지는 것이다.
 돈통은 기능이 아니라 필드(속성)이 되겠죠.
 그럴떄는 돈통을 추가해주는 것이죠.
+
+
+
+# 즐거운 자바 13편 interface, 리플렉션
+
+인터페이스에 대하여 이해하려면~
+SDLC( 소프트웨어 개발 생명 주기)
+소프트웨어를 만들 때 가장 중요한 것이 무엇일까?
+
+필요없는 기능을 구현. (아무도 안사용한다.)
+필요한 기능을 구현
+
+필요한 기능! 을 정의할 필요.
+기능 - 메소드. (필요한 기능)
+자바에서는 메소드만 혼자 있을 수 없다. 메소드는 클래스에 포함되어 있어야 한다.
+
+인터페이스라는 것도 메소드를 가질 수 있다.
+
+클래스의 메소드들. 인터페이스의 메소드들의 차이점?
+구현되어 있다.         선언되어 있다.
+
+```java
+package kr.co.sunnyvale.test;
+
+// Dice라는 인터페이스가 정의되어있다.
+// Dice, 주사위인데. 어떤기능? --> 랜덤한 값을 구하는 기능을 가지고 있다.
+public interface Dice {
+    // Dice는 정수를 반환하는 메소드를 선언하고(인터페이스니깐) 있다.
+    public int get();
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+
+// Dice인터페이스를 구현하는 클래스를 선언한다.
+public class Dice6 implements Dice {
+    // get 메소드를 구현하였다
+    public int get() {
+        // 1~6
+        int value = (int)(Math.reandom() * 6) + 1;
+        return value;
+    }
+}
+```
+
+```java
+package kr.co.sunnyvale.test;
+
+// Dice인터페이스를 구현하는 클래스를 선언한다.
+public class Dice9 implements Dice {
+    // get메소드를 구현하였다
+    public int get() {
+        // 1~9
+        int value = (int)(Math.reandom() * 9) + 1;
+        return value;
+    }
+}
+```
+
+- Dice인터페이스를 구현하는 DIce6, Dice9 구현의 관계
+- 인터페이스를 왜 선언하느냐?
+  - 구현보다는 어떤 기능이 필요할까? 라는 것이 먼저 고민되는 것이다.
+  - 기능선언이 구현보다 먼저다.
+
+
+
+많은 사람들이 어떤 구현을 하기전에 이러한 기능이 필요하겠어.라고
+고민을 했다면.....
+
+인터페이스를 정의하는 것이다.
+
+초보자들은 인터페이스를 잘 사용하지 않는다.
+무엇인가 만들고 싶은 프로그램이 있어야지만! 인터페이스를 선언.
+페이퍼 프로토타이핑
+
+내가 만들고 싶은 프로그램을 그램으로 표현.
+페이퍼 프로토타이핑.
+
+화장실 찾기 앱.
+
+화장실 목록
+화장실 점수
+화장실 정보
+
+```java
+interface 화장실서비스 {	
+    화장실 목록();
+    화장실 점수();
+    화장실 정보();
+}
+```
+
+```java
+interface 회원서비스{
+	회원가입();
+	회원수정();
+	회원탈퇴();
+}
+
+
+```
+
+회원과 관련된 것들은 회원서비스라는 인터페이스가지도록 한다.
+응집도 - 관련된 것을 잘 모아서 가지고 있어야 한다.
+
+구현? 선언? 인터페이스는 선언만 하는 것이다.
+
+
+
+페이퍼 프로토타이핑 ( 초보자 )을 하게 되면  아래 3가지가 도출된다. 구현이 아닌 껍데기임
+
+화면( UI )  - HTML, CSS 구현
+기능 ( BI ) - 자바 인터페이스  -> class로 구현
+외부기능 ( SI ) - 구글 skt kt 아이핀 - 외부에다가 이러한 기능을 요청
+
+**인터페이스 도출 후 실제 구현**
+
+
+
+**클래스 정보를 통해서 인스턴스를 만들 수 있구나.**
+
+```java
+package kr.co.sunnyvale.test;
+
+public class DiceTest {
+    // main메소드 뒤에 throws Exception이라고 적으면 Exception을무시하겠다.
+    public static void main(String[] args) throws Exception{
+        // 인스턴스를 만들려면 new 생성자()
+        // 인터페이스 참조type이 될 수 있다
+        // 클래스 이름이 문자열이니깐. 다양한 경로로 읽어들일 수 있다.
+        String className = "kr.co.sunnyvale.test.Dice9"; //패키지이름을 포함한 클래스이름
+        
+        // ClassLoader를 이용하여 className에 해당하는 클래스의 정보를 읽어들어서
+        // 메모리에 올리고 그 클래스 정보를 가지는 clazz라는 변수를 선언
+        // claszz변수를 이용하면 그 클래스 이름, 필드 정보, 메소드 정보 등을 구할 수 있따.
+        // 자바에서 리플렉션기술 임(내부적으로 리플랙션을 이용해서 나오게 해준다 ide에서.찍으면 )
+        Class clazz = Class.froName(className); // 클래스로더라고 하는데 클래스이름을 넣어주면 
+        										// 클래스정보가 메모리에 올라간다. 그리고
+        								// 클래스 정보를 가지는 클래스가 나온다(Class clazz)
+        
+        
+        Method[] methods = clazz.getMethods(); // clazz가 가지고 있는 모든 메서드정보가 나옴
+        for(int i = 0; i < methods.length; i++){
+            System.out.println(methods[i].getName());
+        } 
+        
+        
+        // clazz.newInstance() - clazz가 가지고 있는 정보를 이용하여인스턴스를 만들어라.
+        // new DIce9()
+        // class.newInstance()는 오브젝트타입으로 반환해서 형변환해줌
+        Dice dice1 = (Dice) clazz.newInstance();//모든 다이스는 다이스인터페이스를 구현하니
+        Dice dice2 = (Dice) clazz.newInstance();//인터페이스로 형변환가능 그럼 변경안해도됨
+        
+        Dice dice1 = new Dice6();
+        Dice dice2 = new Dice6();
+        
+        // Dice type으로 변수를 선언하는 것은 무슨의미냐?
+        // 해당 인터페이스를 구현하고 있는 클래스가 무엇이든지 간에 이용가능.
+        System.out.println(dice1.get());
+        System.out.println(dice2.get());
+    }
+}
+```
+
+인터페이스가 있으면 되도록 인터페이스 타입을 이용하여 클래스를 이용하도록 한다.
+
+TV를 사용할 때도 내부적인 구현은 몰라도 된다.
+TV의 겉에 드러난 인터페이스만 사용하면된다.
+
+인터페이스       구현한클래스
+TV tv            =   new LCDTV();
+TV tv            =   new 브라운관TV();
+tv.on();
+tv.이용하는메소드();
+tv.off();
+
+브라운관 TV든 LCD TV든 인터페이스는 동일하다.
+
+겉모습이 같거나 비슷하다. 구현이 달라지도라도 쉽게 사용할 수 있다.
+회사들이 뭔가 새로운 제품을 만들때 겉모습을 바꾸려고 하지 않는다 인터페이스는 거의 똑같다. 같은 제품과 비슷하게 가려고 한다.
+
+윈도우 8 시작(X) ----> 윈도우 10 시작(0)
+
+
+
+프러그램을 만드실 때는 되도록 인터페이스 정의하려고 노력해야한다.
+선언이 먼저!! - 프로그램을 만드려면 인터페이스가 필요해 라고 생각해야한다.
+
+
+
+컬렉션 프레임워크(자료구조)
+Collection, List, Set, Map 인터페이스를 정의.
+그 인터페이스를 구현하도록 함.
+
+
+
+복습
+**컬렉션프레임워크**
+
+Collection
+Set
+List
+Map
+위의 4가지 인터페이스를 사용하는 것 복습~
+
+Servlet
+html- css - javascript
