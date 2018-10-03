@@ -2590,3 +2590,341 @@ Map
 
 Servlet
 html- css - javascript
+
+
+
+
+
+
+
+# 즐거운 자바 14편 - 기본형, 참조형, 배열
+
+### 기본형과 참조형
+
+기본형 (암기): boolean, byte, cahr, int, short, long, float, double : 기본형은 값을 가진다.
+참조형 : 기본형을 제외한 모든것 : 참조형은 참조한다(레퍼런스).
+
+#### println( ? ) - 메소드 오버로딩. 이용하는 사람은 대충 사용.
+
+**어떤 값이든 받아들이기 위하여 아래와 같은 타입을 받아들임**
+
+자바세성에서 객체가 아닌 것들. - 기본형(Primitive Types) 애내만 객체가 아니다
+
+소문자로 시작한다.
+boolean - 참 / 거짓
+char - 문자하나(2byte), 2bye 양의 정수
+int - 4byte 정수, 우리가 보통 적는 정수 상수( 10, 100, 1000)
+long - 8byte 정수, 10L, 20L
+float - 4byte 실수, 10.5f, 10.5224f
+double - 8byte 실수, 우리가 보통 적는 실수 상수 ( 20.5, 10.5224)
+
+아래는 객체
+배열
+char[] - 배열도 Object(객체)이다 특수한 객체이다., class를 제공하는 것은 아니지만 배열도 객체다
+
+문자열
+String - 부모가 Object인 문자열.을 나타냄
+
+Object - println(Object) : Object나 Object의 후손들을 받아들인다.(object에다가 각종 클래스에 대한 인스턴스를 집어넣으면 다 출력이 된다. )  
+
+- 오브젝트 값이 들어오게 되면 
+  - 의미있는 값으로 출력하려면 toString()를 오버라이딩 해줘야함
+
+- println(Object) 를 사용할 수 없는 애들이있다
+  - 객체가 아닌 애들 - 기본형 타입 
+
+```java
+public class PrintInTest {
+    public static void main(String[] args){
+        boolean booleanValue = false;
+        byte byteValue = 1;
+        char charValue1 = 'a';
+        char charValue2 = 65; // A
+        short shortValue = -20;
+        int intValue = 500;
+        long longValue - 5000000L;
+        float floatValue = 50.4f;
+        double doubleValue 50.4;
+        char[] charArray = new Char[]{ 'h', 'i' }; // hi
+        String stringValue = "hi"; // 문자열       // hi
+        Object obj1 = new Object();
+        Car car = new Car();
+        
+        System.out.println(booleanValue);
+        System.out.println(byteValue);
+        System.out.println(charValue1);
+        System.out.println(charValue2);
+        System.out.println(shortValue);
+        System.out.println(intValue);
+        System.out.println(longValue);
+        System.out.println(floatValue);
+        System.out.println(doubleValue);
+        System.out.println(charArray);   // hi/Char 배열도 object이지만 내부적으로 Hi출력
+        System.out.println(stringValue); // hi
+        System.out.println(obj1);        //java.lang.Object@15db9742
+        System.out.println(car);  // 오브젝트의 후손들을 다 받아들일 수 있다.
+    						  // Car@2a13955  // 오바라이딩후 다시실행
+    							  // 자동차입니다. 만 출력됨
+    // Object의 toString() 반환하는 값을 출력
+	// Object의 넣어주게 되면 객체의 toString()메소드가 반환하는 값을 출력해줌
+        
+        
+        int[] intArray = new int[]{1, 2, 3, 4, 5};
+        System.out.println(intArray); // [I@15db9742 배열도 객체니깐 
+									 // toStriong()메소드가 반환하는 값을 출력해줌
+    }	
+}
+```
+
+```java
+public Class Car() {
+    public Car(String name) {
+        this.name = name;
+        System.out.println("Car생성자");
+    }
+    
+    public Car(){
+        
+    }
+    
+    //메소드가 오버라딩 되면 무조건 자식의 메소드가 호출된다.
+    @Override
+    public String toString() {
+        return "자동차입니다.";
+    }
+}
+```
+
+
+
+**기본형은 값을 가진다.**(저장한다)
+**참조형은 값을 참조한다. (레퍼런스한다.)**
+
+int x = 10;
+byte b1 = 4;
+
+x라는 것은 4바이트를 사용함 그래서 x는 4바이트 만큼 메모리를 차지함 
+그안에  10이라는 숫자가 들어감
+
+String str1 = new String("hello");
+srt1이 hello를 가지고 있는 인스턴스를 참조함(가리킴)
+
+
+
+```java
+public class SwapTest1 { 
+    public static void main(String[] args){
+        int x = 5;
+        int y = 10;
+        swap(x, y);
+        
+       // Data d2 = d; // d가 참조하는 것을 d2도 참조한다.
+       // d2.y =1000;
+        
+        System.out.println(x + ',' + y);  // 두번쨰 출력
+    }
+    
+    // 기본형 타입을 적어주게 되면 값이 복사가 된다 copy of value
+    // main의 x,y와 파라미터의 x,y가 일어났기에 변수이름은 같지만 근본적으로는 다른 주소() 다르다.
+    public static void swap(int x, int y){
+        int tmp = x;
+        x = y;
+        y = tmp;
+        System.out.println(x + "-" + y);  // 첫번째 출력
+    }
+}
+// 결과 
+// 10 - 5 안에서는 변경이 되었지만
+// 5, 10  밖으로 나와서는 main이가지고 있는 x,y는 여전히 5, 10 이나옴
+
+```
+
+```java
+public calss SwapTest2 {
+    public static void main(String[] args) {
+        Data d = new Data();
+        d.x = 5;
+        d.y = 10;
+        swap(d);
+        System.out.println(d.x + "," + d.y);
+    }
+    
+    public static void swap(Data d){
+        int temp = d.x;
+        d.x = d.y;
+        d.y = tmp;
+    }
+    
+}
+
+class Data {
+    int x;
+    int y;
+}
+```
+
+
+
+
+
+배열. 배열에 대한 문법도 모두 암기.
+
+배열을 선언하는 방법.
+정수형 변수를 1000개 선언.  같은 type의 변수를 여러개 선언.
+
+int x1 = 0;
+int x2 = 0;
+
+....
+
+int x1000 = 0;
+
+배열은  :같은 타입의 변수를 여러개 선언할때 배열을 사용함
+
+------
+
+정수형 배열을 선언
+
+```java
+// int[] type의 array변수
+int[] array = new int[1000];  // 1000개짜리 배열
+
+// int type의 array[] 변수
+int array[] = new int[1000];
+
+int[] a,b; // a, b가 모두 정수배열
+int a[], b; // a[]는 배열, b는 배열이 아니다.
+
+Car[] carArray = new Car[3]; // 
+int[] intArray = new int[3];
+
+carArray[0] = new Car();
+carArray[1] = new Car();
+carArray[2] = new Car();
+
+intArray[0] = 5;
+intArray[1] = 10;
+intArray[2] = 15;
+
+
+배열이 아닐 경우 3개의 변수를 선언하고 초기화하는 방법 
+
+Car car1;	// 자바언어에서는 인스턴스를 아무것도 안가르키니깐 null이죠^^
+Car car2;	// null이 안되려고 한다면 인스턴스를 넣어줘야한다.
+Car car3;
+
+car1 = new Car();
+car2 = new Car();
+car3 = new Car();
+
+
+
+int int1;	 // 기본형은 아무것도 넣어주지 않아도 0으로 초기화됨, 필드일 경우엔 // 메소드안에서는 
+int int2;    // 값을 넣어줘야함, 
+int int3;	 // 변수 3개 선언한 것과 동일하다.
+
+int1 = 5;
+int2 = 10;
+int3 = 15;
+```
+
+# 기본형 배열은 값을 가지는 배열이고
+
+# 객체타입의 배열은 값을 가리키는 배열이다.
+
+
+
+```java
+public class StringArrayText{
+    
+    public static void main(String[] args) {
+        //3개짜리 String을 참조(가르키는)하는 배열
+        String[] stringArray = new String[3]; // stringArray는 3개짜리 배열만들어졌는데 아무것도 가르키는게 없다.
+        
+        stringArray[0] = new String("hello");
+        System.out.println(stringArray[0]);
+        
+        
+    }
+}
+```
+
+
+
+
+
+배열을 선언과 동시에 초기화
+
+```java
+int[] array = new int[]{5, 10, 15};
+String[] array2 = new String[]{"hello", "world", "!!!"};
+Car[] array3 = new Car[]{new Car(), new Car(), new Car()};
+```
+
+배열은 객체인데 그렇기 때문에  특수한 속성을 가지고 있어요 (length)
+
+```java
+System.out.println(aaray.length);
+System.out.println(aaray2.length);
+System.out.println(aaray3.length);
+```
+
+```java
+for (int value : array) {      // array배열에서 값을 하나씩 꺼내서 value에게 저장.
+    System.out.println(value); // 더이상 꺼낼깨 없으면 반복문이 중단
+}
+```
+
+
+
+2차원 배열.
+// 자바에서 2차원 배열은 없다. **1차원배열을 가리키는 1차원 배열.**
+
+```java
+int[][] array = new int[3][2];
+
+// array변수가 참조하는 배열의 길이
+array.length; // 3이 나옴
+
+// array[0] 변수가 참조하는 배열의 길이
+array[0].length  // 2 나옴
+
+    
+int[][] array2 = new int[3][];  //아직 뒤는 결정하지 않았음 / 가변적
+array2[0] = new int[2];
+array2[1] = new int[3];
+array3[2] = new int[4];
+
+Syste.out.println(array2.length);
+Syste.out.println(array2[0].length);
+Syste.out.println(array2[1].length);
+Syste.out.println(array2[2].length);
+
+
+
+// 선언과 동시에 초기화  
+int[][] array3 = new int[][]{ {1,2}, {1,2,3}, {1,2,3,4} };
+for(int i = 0; i < array3.length; i++){ // 3번반복 : 0, 1, 2
+    for(int k = 0; k < array3[i].length; k++){
+        System.out.print(array3[i][k] + '\t'); // 모든 값 출력
+    } 
+    System.out.println();
+		1	2
+        1	2	3
+        1	2	3	4
+}
+
+제가 설명하는 것보다. 여러분들이 배열에 대한 것은 책을 보고
+예제 포함하여 완벽하게 암기
+```
+
+
+
+오늘의 숙제.
+
+public static void main(String[] args)
+
+프로그램 아규먼트 args
+
+조사. 예제 작성.
+
