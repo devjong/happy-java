@@ -2928,3 +2928,459 @@ public static void main(String[] args)
 
 조사. 예제 작성.
 
+
+
+
+
+# 즐거운 자바 15편 - Object와 String
+
+```java
+public class ObjectTest1 {
+    public static void main(String args[]) {
+        Object obj1 = new Object();  // java.lang.Object@2a139a55
+        System.out.println(obj1);
+        //오브젝트는 항상 최상위 클래스이다. 
+        //그래서 어떤 클래스던지 간에 오브젝트 타입으로 참조할 수 있다.
+        
+       // 버스에는 아무것도 없지만 버스가 상속받는 부모인 Car에는 toString() 메소드가 있음
+        Object obj2 = new Bus(); // 자동차입니다. 
+        System.out.println(obj2);
+
+        
+        Object obj3 = new Dice();// Dice@15db9742
+        System.out.println(obj3);
+
+        
+    }
+}
+```
+
+```java
+public class Car {
+    private String name;
+    
+    public Car(String name){
+        this.name = name;
+        System.out.println("Car생성자");
+    }
+    
+    public Car(){
+        
+    } 
+    
+    //메소드가 오버라이딩 되면 무조건 자식의 메소드가 호출된다.
+    @Override
+    public String toString() {
+        return "자동차입니다.";
+    }
+}
+```
+
+```java
+public Class Bus extend Car{
+    public Bus(){
+        
+    }
+}
+```
+
+Object가 가지고 있는
+toString(), equals(), hashCode()는
+오버라이딩을 위해 준비된 메소드이다. 
+
+- 이 의미는 오브젝트 자체가 가지고 있는 메소드 자체가 쓸모가 없다.
+  System.out.print(Object);
+  Object를 파라미터 넣어주면 내부적으로 toString()을 호출하여 
+  해당 메소드가 반환한 값을 리턴. 그 리턴값을  출력.
+
+- toString()은 말그래도 객체가 갖고 있는 값을 문자여로 바꿔서 반환
+
+- 어떤 객체가 있다. 그 객체가 가지고 있는 필드가 있는데.
+  필드가 30개이다. 암호, 중요한 값들은 외부에 출력하기 원하지 않는 값도 있을 수 있다.
+
+  어떤 필드를 문자열로 만들것인가? 이 결정은 누가 할 수 있는것이죠? 그 객체를 만든사람.
+
+Object가 가지고 있는 toString()메소드는 그냥 부모가 가지고 있는 것을 물려받아서 사용하기에는 아무 쓸모가 없는 거의 아무 쓸모가 없는 클래스이다.
+
+ toString() 메소드를 왜 Object가 제공해주는 이유는 니가 입맞에 맞게끔 원하는 속성을 문자열로 만들어서 리턴해줘라 그걸가지고 출력하자 이것입니다.
+
+
+
+Source - Generate toString() 자동으로 만들어주는 기능
+
+
+
+**equals는 값을 비교하는 메소드입니다. **-- 값이 같은지를 확인해보고 싶을때.
+
+
+
+== : 같은 레퍼런스냐?
+
+```java
+public class ObjectTest2 {
+    public static void main(String[] args) {
+        Dice dice1 = new Dice();
+        Dice dice2 = new DIce();
+        
+        Dice dice2 = dice1 // d1이 가르키는 것을 dice2도 가르켜라. 이것은
+       
+        // == 은 같은 인스턴스를 참조하느냐? 같은 것을 가리키느냐?
+        if(dice1 == dice2){
+            System.out.println("dice1 == dice2");   //  Dice dice2 = dice1 
+        } else {
+            System.out.println("dice1 != dice2");  // dice1 != dice2
+        }
+         
+    }
+}
+```
+
+
+
+
+
+**equals는 값을 비교하는 메소드입니다. **-- 값이 같은지를 확인해보고 싶을때.**
+
+객체와 객체가 값이 같은지 라는 것을 알려면?
+학생 2명이 있다. 2명의 학생은 같은가?
+같은가? 라는 것을 말하려면 **기준**을 정해야한다.
+
+equals 메소드도 오버라이딩 하지 않으면 거의 쓸모가 없는 메소드입니다.
+
+```java
+public class ObjectTest2 {
+    public static void main(String[] args){
+        Dice dice1 = new Dice();
+        DIce dice2 = new Dice();
+        
+        
+        if(dice1.equals(dice2)){
+            System.out.println("dice1 equals dice2");
+        }else{
+            System.out.println("dice1 not equals dice2");
+        }
+    }
+} // 결과 같은 값을 가진다. dice1 equals dice2
+```
+
+
+
+자동으로 만들어졌던 equals메소드는 어떻게 만들어졌는지 살펴보자구요
+Object 가지고 있는 equals는 
+자기자신(this)와 파라미터로 들어온 Object의 필드를 비교해서
+필드가 같으면 true를 리턴해주고 다르면 false를 리턴해줌
+
+```java
+public Class Dice {
+    	@Override
+		public boolean equals(Object obj) {
+		    // this와 obj는 같은 레퍼런스일 경우
+		    if(this == obj)
+		        return true;
+    
+    		//equals라는 메소드가 실행된다라는 것은 자기 자신의 인스턴스가 있따는 전제이다.
+            // Object가 null이라는 것은 들어온 것 자체가 없다는 의미임
+            if(obj == null)
+        		return false;
+    
+            // 자신의 클래스정보, 파라미터로 들어온 obj의 클래스정보.
+            // 중요!! 어떤 클래스던지 간에 클래스정보는 메모리에 오직 하나만 올라가 있다.
+            // 같은 클래스라면 그 클래스 정보는 오직 메모리에 딱 하나만 있따.
+            // this.getClass() this생략
+            if(getClass() != obj.getClass()) // 현재 자신의 클래스 정보와 파라미터들어온 
+                                            //obj의 클래스정보가 같지 않느냐? 
+                                            //즉 참조가 같으냐?라고 보는 거임
+                return false;
+        //    ---------여기까지 지나왔다면 지금 들어온 오브젝트가 다이스클래스라는 뜻임
+
+            Dice other = (Dice) obj;
+            if(faceCount != other.faceCount)
+                return false;
+            // faceCount는 기본형이다. 그래서 값을 비교할때 == 을 사용한다.
+            // 하지만 객체타입의 값을 비교할때에는 기준정해지고 equals로 비교해준다.
+
+            return true
+        }
+    
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + faceCount;
+        return result;
+    }
+    
+}
+
+
+```
+
+Object의 equals메소드는 오버라이딩을 목적으로 제공된다.
+메소드가 오버라이딩되면 무조건 자식의 메소드가 된다.
+값이 같은지 비교하려면 기준이 있어야 하는데. 이 기준은 객체를 만드는 사람만 기준을 잡을 수 있다.
+
+
+
+만들어질때 equals와 hashCode가 같이만들어진다.
+이유는 값을 비교할때는 equals가 사용되고
+hashCode는 Map이라는 자료구 Set이라는 자교구조
+
+(set은 중복된 값이 들어올 수 없다. Map(key, value) key도 값이 같은 것이 하나라도 없다.)
+set하고 key는 유일한 값이 들어가야함 그리고 내가 필요한 값을 꺼낼때에도 재빠르게 꺼내야 한다.
+그래서 재빨리 꺼내기 위해서 보통 Hash알로리즘이 많이 사용된다.
+
+hash알고리즘은 
+
+어떤 객체를 집어넣어주면 이(어떤) 객체가 가지고 있는 hashCode() 메소드를 호출한다.
+그 값에 해당되는 바구니를 만든다 .
+
+어떤 값을 넣은다 key가 되었든  아니면 set에 들어가는 값이든 
+이 값이 가지고 있는 해쉬코드를 호출해줘서
+
+해쉬코드가 1을 리턴하면 1이라는 바구니를 만들어주고 거기에 객체가 저장됩니다.
+
+또다른 객체를 넣어주면 객체의 해쉬코드가 호출되는데 이 해쉬코드가 2가나오면 
+
+
+
+
+
+int 값이 특정범위에 있다. 특정범위에 있따는 것은 int가 표현할 수 있는 값 만큼만. 버킷(바구니)를 만들 수 있따.
+
+결국 int보다도 더 많은 데이터가 저장이 되면 하나의 버킷(바구니)에 여러개의 데이터가 저장이 될 수 있습니다.
+
+
+
+이클리스에서 같이 만들어주는 이유는 같이 쓰일 일이 많다.
+
+
+
+오브젝트가 가지고 있는 세가지 메소드는 그냥사용하면 아무 쓸모가 없고, 
+**여러분들 께서 기준을 정해주기 위한 메소드입니다.**
+
+**사용하는 사람이 반드시 세가지 메소드를 오보라이딩 해서 이렇게 리턴해주셔야 하는 것 꼭 기억해주시기 바랄게요**
+
+
+
+**독특한 클래스가 있다. String이다.** 
+
+String 클래스이다. String은 new 를 이용하지 않아도 객체를 만들 수 있다.
+String은 너무 자주 사용되니 new를 쓰지 않아도 문자열을 생성할 수 있도록 하였따.
+
+
+
+```java
+public class void main(String[] args){
+    String str1 = "hello";
+    String str2 = "hello";
+    String str3 = new String("hello");
+    String str4 = new String("hello");
+ 
+    if(str1 == str2){
+        System.out.println("str1 == str2");
+    }
+    
+    if(str1 == str3){
+        System.out.println("str1 == str3");
+    }
+    
+    if(str3 == str4){
+        System.out.println("str3 == str4");
+    }
+}
+// 결과
+// str1 == str2
+
+
+
+public class void main(String[] args){
+    String str1 = "hello";
+    String str2 = "hello";
+    String str3 = new String("hello");
+    String str4 = new String("hello");
+ 
+    if(str1.equals(str2)){
+        System.out.println("str1 equals str2");
+    }
+    
+    if(str1.equals(str3)){
+        System.out.println("str1 equals str3");
+    }
+    
+    if(str1.equals(str4)){
+        System.out.println("str3 equals str4");
+    }
+}
+// 결과
+// str1 equals str2
+// str1 equals str3
+// str3 equals str4
+
+가장중요 이번강의에서
+값이 같은 것인지 같은 것을 참조하는 것인지를
+같은 것을 참조하느냐? 같은 값이냐? 
+   
+같은 것을 참조 : ==
+같은 값이냐 : equals 
+equals메소드는 반드시 Override되어 있어야만 값을 비교할 수 있다.
+```
+
+- new 가 나오면 무조건 메모리에 인스턴스가 나오는 것입니다.
+
+- String str1 = "hello";
+  String str2 = "hello";
+
+  str1 == str2 // true
+
+  new가 사용되지 않은 것은  상수이다. 큰따옴표로 만든 것은 상수로 취급된다.
+  자바에서는 상수만 취급되는 공간이 있다. 
+  상수는 변하지 않는 값이기 때문에 구지 메모리에 여러개 있을 필요가 없다**
+  s1과 s2는 같은 인스턴스를 가르킨다.
+
+- new를 사용하게 되면은 무조건  새롭게 인스턴스가 힙메모리에 올라간다.
+
+  - String str3 = new String("hello");
+    String str4 = new String("hello");
+    str3 ---> hello
+    str4 ---> hello
+
+    str3과 str4는 같지 않다.
+
+
+
+스트링을 사용할때 str1, str3? 어떻게 선언하는게 좋은가?
+
+String str1 ="hello"; <--- 이걸 사용하는게 좋다. 이유는 같은 문자열인데 메모리에 여러개 있을 필요가 없다.
+
+**String은 불변클래스이다.**
+
+
+
+우리가 인스턴스를 여러개 만드는 이유는 각각의 필드가 구별되기 때문이다. 하지만 String은 값이 같을 경우에는 구지 여러개를 만들 필요가 없다.
+
+
+
+```java
+public class StringTest2 {
+    public static void main(String[] args) {
+        String helloWorld = "Hello World!!!";
+        String str = helloWorld.subString(5);
+        System.out.println(str);            // world!!!
+        System.out.println(helloWorld);		// Hello World!!!  
+        
+        // **String은 불변클래스이다.**
+        //String이 가지고 있는 모든 메소드는 새로운 String을 반환 
+		//자기 자신은 변하지 않는다.
+        
+        
+    }
+}
+```
+
+
+
+
+
+```java
+public class StringTest2 {
+    public static void main(String[] args) {
+        // String은 불변인데 더해줬다는 것은 hello , world각각 변한게 아니고
+		// 새로운 문자열이 나온 것임
+       String str = "hello " + "world";
+       System.out.println(str);
+        
+       // 내부적 위 두줄 코드가 내부적으로는 
+       String str3 = new StringBuffer().aapend("hello ").append("world").toString();
+       System.out.println(str3);
+        
+       // StringBUffer는 String과 비슷한 객체인데 버퍼는 자기자신의 내부적인 값이 변하는 것이다.
+       // 자기자신에 hello가 추가되고 자기자신에게 world가 추가되는 형태
+        
+       // 위에서 더하기 연산자가 쓰일때마다 실제로는 new StringBUffer() 이라는 버퍼가 만들어짐
+       // 문자열과 문자열을 더하는 코드는 
+	   // SringBuffer인스턴스를 만들도록 한다.
+        
+       // 인스턴스를 만드는 작업은 힘든 작업이다.
+        // 인스턴스가 만들어진다는 것은 메모리에 인스턴스가 올라가는 것이다.
+        // 메모리에 인스턴스에 올라가고 이런 것은 속도가 느린 작업이다.
+        // 되도록이면 인스턴스를 많이 만드는 것이 좋은 것이 아니다. 적게 만들어야 한다.
+        
+        // for loop를 통해 인스턴스를 만들게 되니깐 인스턴스가 100번 만들어지고 
+        // 또나중에 메모리에서 사라질 수 있다.
+        // 반복문에서 더하기 연산자를 쓰는 것은 StringBuffer()가 굉장히 많이 만들어지고 
+        // 속도를 느리게 만드는 원인이 된다. 
+        
+        // 더하기 연산자를 많이 쓰면 쓸수록 나중에는 굉장히 느린 프로그램이 될 수 있따.
+        // 특히 서버프로그래밍 할떄에는 문자열과 문자열을 더하는 것은 굉장히 느리다.
+        
+       long start1 = System.nanoTime(); // 100000 1초를 나눈 것이다. 현재시간을 나노초로 구함
+       String str2 = "";
+        for(int i = 0; i < 100; i++){
+          //  str2 = str2 + "*";
+          str2 = new StringBuffer().aapend(str2).append("*").toString();
+  
+        }
+        
+        
+        System.out.println(str2);
+        long end1 = System.nanoTime();
+        System.out.println(end1 - start1); // 131585
+        
+        ------------------------------------------------------------
+       long start2 = System.nanoTime(); // 100000 1초를 나눈 것이다. 현재시간을 나노초로 구함
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < 100; i++){
+          sb.append("*");
+  
+        }
+        
+        System.out.println(sb.toString());
+        long end2 = System.nanoTime();
+        System.out.println(end2 - start2); // 25856
+        
+    }
+}
+```
+
+결론 위의 코드를 보고
+
+문자열 안에서 문자열과 문자열을 더하는 코드를 사용해서는 안된다.
+
+StringBuilder 또는 StringBuffer 이것을 사용한다.
+String은 문자열을 결합 한다 이럴때에는 더하기 연산자를 되도록이면 쓰지 않는다.
+String str1 = "hello" + "world"; 더하기 연산자는 왼쪽의 코드 처럼 한줄정도 나오는 것 정도는 괜찮을 수 있는데
+
+**여러번 반복해서 사용할떄에는 StringBuilder이나 StringBuffer을 사용해야함**
+
+**String은 불변클래스다.**
+**String이 가지고 있는 모든 메소드는 다 새로운 String을 리턴해주는 메소드다.**
+**String은 new를 사용하지 않고 인스턴만들 수있따. 되도록이면 new를 사용하지 않고 만들어야 한다.**
+**이유는 구지 String이 메모리에 여러개, 같은 문자열이 메모리에 여러개 있을 필요가 없다.**
+
+**String을 사용할떄 제일 조심해야 할 것은 더하기 연산자 string과 string을 더하는 것을 반복문에서 사용하게 되면 나중에 서버프로그래밍할때 굉장히 엄청 느려집니다.**
+
+**되록이면 StringBuilder 또는 StringBuffer 이것을 사용한다.**
+
+
+
+------
+
+문자열.
+
+긴 문자열안에서 email이 있는지를 확인하라?
+email 패턴이있는지 확인?
+긴 문자열안에서 email만 추출해라.
+
+이런걸하려면 String의 끝판왕!!!
+
+정규표현식은 문자열의 끝판왕 문법.
+언어마다 다 지원. 쉘스크리트 등등
+
+hello@naver.com
+
+오늘의 숙제는
+정규표현식 공부. 예제.
+도전!!!
+
+정규표현식 꼭 공부해야할 내용임
